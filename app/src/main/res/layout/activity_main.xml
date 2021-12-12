@@ -28,7 +28,7 @@
         app:layout_constraintBottom_toBottomOf="@id/btnSave"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleView"
+        android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         tools:listitem="@layout/item_store"
