@@ -7,9 +7,9 @@ import com.example.stores.databinding.ActivityMainBinding
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
-class MainActivity : AppCompatActivity(), OnClickListener,MainAux{
+class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
 
-    private lateinit var mBinding : ActivityMainBinding
+    private lateinit var mBinding: ActivityMainBinding
 
     private lateinit var mAdapter: StoreAdapter
     private lateinit var mGridLayout: GridLayoutManager
@@ -21,8 +21,9 @@ class MainActivity : AppCompatActivity(), OnClickListener,MainAux{
 
         /*mBinding.btnSave.setOnClickListener {
             val store = StoreEntity(name = mBinding.etName.text.toString().trim())
+
             Thread {
-            StoreApplication.database.storeDao().addStore(store)
+                StoreApplication.database.storeDao().addStore(store)
             }.start()
 
             mAdapter.add(store)
@@ -30,11 +31,12 @@ class MainActivity : AppCompatActivity(), OnClickListener,MainAux{
 
         mBinding.fab.setOnClickListener { launchEditFragment() }
 
-        setupRecyclerView()
+        setupRecylcerView()
     }
 
-    private fun launchEditFragment() {
+    private fun launchEditFragment(args: Bundle? = null) {
         val fragment = EditStoreFragment()
+        if (args != null) fragment.arguments = args
 
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -43,13 +45,10 @@ class MainActivity : AppCompatActivity(), OnClickListener,MainAux{
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
 
-        //mBinding.fab.hide()
-
         hideFab()
-
     }
 
-    private fun setupRecyclerView() {
+    private fun setupRecylcerView() {
         mAdapter = StoreAdapter(mutableListOf(), this)
         mGridLayout = GridLayoutManager(this, 2)
         getStores()
@@ -68,44 +67,16 @@ class MainActivity : AppCompatActivity(), OnClickListener,MainAux{
                 mAdapter.setStores(stores)
             }
         }
-
-
     }
 
-    //OnClickListener
-    override fun onClick(storeEntity: StoreEntity) {
+    /*
+    * OnClickListener
+    * */
+    override fun onClick(storeId: Long) {
+        val args = Bundle()
+        args.putLong(getString(R.string.arg_id), storeId)
 
-    }
-
-    override fun onFavoriteStore(storeEntity: StoreEntity) {
-        storeEntity.isFavorite = !storeEntity.isFavorite
-        doAsync {
-            StoreApplication.database.storeDao().updateStore(storeEntity)
-            uiThread {
-                mAdapter.update(storeEntity)
-            }
-        }
-    }
-
-    override fun onDeleteStore(storeEntity: StoreEntity) {
-        doAsync {
-            StoreApplication.database.storeDao().deleteStore(storeEntity)
-            uiThread {
-                mAdapter.delete(storeEntity)
-            }
-        }
-    }
-
-    //MainAux
-    override fun hideFab(isVisible: Boolean) {
-        if (isVisible) mBinding.fab.show() else mBinding.fab.hide()
-    }
-
-    override fun addStore(storeEntity: StoreEntity) {
-        mAdapter.add(storeEntity)
-    }
-
-    override fun updateStore(storeEntity: StoreEntity) {
+        launchEditFragment(args)
     }
 
     override fun onFavoriteStore(storeEntity: StoreEntity) {
@@ -138,5 +109,4 @@ class MainActivity : AppCompatActivity(), OnClickListener,MainAux{
     override fun updateStore(storeEntity: StoreEntity) {
         mAdapter.update(storeEntity)
     }
-}
 }
