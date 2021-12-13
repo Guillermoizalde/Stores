@@ -20,5 +20,10 @@
             </intent-filter>
         </activity>
     </application>
+</queries>
+<intent>
+<action android:Name="android.intent.action.DIAL">
+
+</action>
 
 </manifest>
