@@ -37,4 +37,54 @@ class StoreApplication : Application() {
                     .build()
 
             }
-}
+
+        }
+
+        override fun getItemCount(): Int = stores.size
+
+        fun setStores(stores: MutableList<StoreEntity>) {
+            this.stores = stores
+            notifyDataSetChanged()
+        }
+
+        fun add(storeEntity: StoreEntity) {
+            if (!stores.contains(storeEntity)) {
+                stores.add(storeEntity)
+                notifyItemInserted(stores.size-1)
+            }
+        }
+
+        fun update(storeEntity: StoreEntity) {
+            val index = stores.indexOf(storeEntity)
+            if (index != -1){
+                stores.set(index, storeEntity)
+                notifyItemChanged(index)
+            }
+        }
+
+        fun delete(storeEntity: StoreEntity) {
+            val index = stores.indexOf(storeEntity)
+            if (index != -1){
+                stores.removeAt(index)
+                notifyItemRemoved(index)
+            }
+        }
+
+        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
+            val binding = ItemStoreBinding.bind(view)
+
+            fun setListener(storeEntity: StoreEntity){
+                with(binding.root) {
+                    setOnClickListener { listener.onClick(storeEntity.id) }
+                    setOnLongClickListener {
+                        listener.onDeleteStore(storeEntity)
+                        true
+                    }
+                }
+
+                binding.cbFavorite.setOnClickListener{
+                    listener.onFavoriteStore(storeEntity)
+                }
+            }
+
+        }
