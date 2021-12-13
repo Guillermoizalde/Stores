@@ -73,7 +73,30 @@ class StoreAdapter(private var stores: MutableList<StoreEntity>, private var lis
 
             binding.cbFavorite.setOnClickListener {
                 listener.onFavoriteStore(storeEntity)
+
+                val view = LayoutInflater.from(mContext).inflate(R.layout.item_store, parent, false)
+
+                return ViewHolder(view)
             }
+
+            override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+                val store = stores.get(position)
+
+                with(holder){
+                    setListener(store)
+
+                    binding.tvName.text = store.name
+                    binding.cbFavorite.isChecked = store.isFavorite
+
+                    Glide.with(mContext)
+                        .load(store.photoUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .centerCrop()
+                        .into(binding.imgPhoto)
+                }
+            }
+
+        }
         }
     }
 }
